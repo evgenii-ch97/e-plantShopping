@@ -2,11 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductList() {
-    const [addedToCart, setAddedToCart] = useState({});
+  const [addedToCart, setAddedToCart] = useState({});
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+
+  const cartItems = useSelector((state) => state.cart.items);
+  const dispatch = useDispatch();
+
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const plantsArray = [
     {
@@ -288,9 +294,9 @@ function ProductList() {
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
     setAddedToCart((prevState) => ({
-       ...prevState,
-       [product.name]: true,
-     }));
+      ...prevState,
+      [product.name]: true,
+    }));
   };
 
   return (
@@ -321,6 +327,7 @@ function ProductList() {
             {' '}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
               <h1 className="cart">
+                <span className="cart_quantity_count">{cartCount || null}</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 256 256"
